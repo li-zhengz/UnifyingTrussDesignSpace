@@ -39,7 +39,7 @@ torch.backends.cudnn.benchmark = True
 
 device = 'cpu'
 model = vaeModel()
-c_model = c_MLP()
+c_model = cModel()
 
 model.load_state_dict(torch.load(outputFolder+'/best_model.pt', map_location=torch.device('cpu')))
 c_model.load_state_dict(torch.load(outputFolder+'/best_c_model.pt', map_location=torch.device('cpu')))
@@ -316,3 +316,43 @@ for i in range(initial_z_trace.shape[0]):
 output_file = open(inverseSaveFolder+'/z_trace.pkl', 'wb')
 pickle.dump(z_trace_data, output_file)
 output_file.close()
+
+# ****************************************************
+# ******** Post processing and Write results *********
+# ****************************************************
+
+# adj_decoded = adj_decoded.detach().cpu().numpy()
+# x_decoded = x_decoded.detach().cpu().numpy()
+
+# a_recon = adj_vec2array(adj_decoded, a_row, a_col)
+# x_recon = x_vec2array(x_decoded, x_row, x_col)
+
+# tmp = []
+# new_base_lattice = np.array(a_recon)
+# num_not_on_boundary = []
+# for j in range(num_sample):
+#     ex = new_base_lattice[j*numNodes:(j+1)*numNodes,:]
+#     ex_x = x_recon[j*numNodes:(j+1)*numNodes,:]
+#     ex[np.triu_indices(numNodes)] = 0.
+#     row = np.nonzero(ex)[0]
+#     col = np.nonzero(ex)[1]
+#     g = nx.Graph()
+#     for i in range(row.shape[0]):
+#         g.add_edge(row[i], col[i])
+#     num_connected = len(list(list(connected_components(g))))
+#     tmp.append(num_connected)
+#     if num_connected == 0:
+#         num_not_on_boundary.append(1)
+#     else:
+#         not_on_boundary = check_bc_connected(ex, ex_x, 1)
+#         num_not_on_boundary.append(not_on_boundary.shape[0])
+# connected_part = np.array(tmp)
+# num_not_on_boundary = np.array(num_not_on_boundary)
+
+# valid_id = np.where((connected_part == 1.))[0]
+# print("Model in ", outputFolder)
+# print("Validation score = ", valid_id.shape[0]/num_sample)
+
+# print(inverseSaveFolder)
+# sparse.save_npz(inverseSaveFolder+'/adj.npz', sparse.csr_matrix(a_recon))
+# sparse.save_npz(inverseSaveFolder+'/nodes.npz', sparse.csr_matrix(x_recon))

@@ -181,7 +181,7 @@ class vaeModel(nn.Module):
         x_out = torch.sigmoid(x) - 0.5
         return adj_out, x_out
 
-class c_MLP(nn.Module):
+class cModel(nn.Module):
     def __init__(self):
         super(c_MLP, self).__init__()
         self.dropout_p = 0.
@@ -210,41 +210,5 @@ def weights_init(m):
             torch.nn.init.zeros_(m.bias)
             # m.bias.data.fill_(0.01)
 
-
-class invModel(nn.Module):
-
-    def __init__(self):
-        super(invModel, self).__init__()
-        self.dropout_p = 0.
-
-        self.model = torch.nn.Sequential()
-        self.model.add_module('inv_fc1', nn.Linear(paramDim, inv_hidden_dim[0], bias = False))
-        self.model.add_module('inv_relu1',nn.ReLU())
-        for i in range(1, len(inv_hidden_dim)):
-            self.model.add_module('inv_fc' + str(i+1),nn.Linear(inv_hidden_dim[i - 1], inv_hidden_dim[i], bias = False))
-            self.model.add_module('inv_relu' + str(i+1),nn.ReLU())
-            self.model.add_module('inv_dropout' + str(i+1), nn.Dropout(self.dropout_p))
-
-        self.inv_mu = nn.Linear(inv_hidden_dim[-1], a_dim + ax_dim + x_dim, bias = False)
-        self.inv_std = nn.Linear(inv_hidden_dim[-1], a_dim + ax_dim + x_dim, bias = False)
-
-        self.activation = nn.ReLU()
-        self.sigmoid = nn.Sigmoid()
-
-    def reparameterize(self, mu, logvar):
-        sigma = torch.exp(logvar)
-        eps = torch.FloatTensor(logvar.size()[0],1).normal_(0,1)
-        eps = eps.to(device)
-        eps  = eps.expand(sigma.size())
-        return mu + sigma*eps
-
-    def forward(self, z):
-        z = self.model(z)
-
-        mu_pred = self.inv_mu(z)
-        std_pred = self.inv_std(z)
-        z_pred = self.reparameterize(mu_pred, std_pred)
-
-        return z_pred, mu_pred, std_pred
 
 

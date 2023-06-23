@@ -164,7 +164,7 @@ a_weight = 1
 c_weight = np.ones([epochs])*1e4 # constant weight of stiffness prediction loss
 
 model = vaeModel()
-c_model = c_MLP()
+c_model = cModel()
 model.to(device)
 c_model.to(device)
 

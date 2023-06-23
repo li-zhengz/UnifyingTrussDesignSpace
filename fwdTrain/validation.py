@@ -30,7 +30,7 @@ torch.backends.cudnn.benchmark = True
 
 # device = 'cpu'
 model = vaeModel()
-c_model = c_MLP()
+c_model = cModel()
 
 model.load_state_dict(torch.load(outputFolder+'/best_model.pt', map_location=torch.device('cpu')))
 c_model.load_state_dict(torch.load(outputFolder+'/best_c_model.pt', map_location=torch.device('cpu')))
