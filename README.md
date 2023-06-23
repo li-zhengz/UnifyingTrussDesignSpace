@@ -54,4 +54,4 @@ You can use the code to optimize for other properties by defining the target pro
 # target property names: ['E11', 'E22', 'E33', 'G23', 'G31', 'G12', 'v21', 'v31', 'v32', 'v12', 'v13', 'v23']
 opt_target = ['E33'] 
 ```
-The obtained inverse designs of truss structures are saved in the form of their adjacency matrix and node positions. 
+The number of initial guesses `num_sample` and the number of cores used in multiprocessing `num_workers` can be modified to fit specific requirements.
