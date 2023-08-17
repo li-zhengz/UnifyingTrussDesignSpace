@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If this code is useful for your research, please cite it as below."
+authors:
+  - family-names: Zheng
+    given-names: Li
+    orcid: https://orcid.org/1234-5678-9101-1121
+title: "UnifyingTrussDesignSpace"
+version: 0.1.0
+doi: 10.5281/zenodo.82555658
+date-released: 2023-08-17
