@@ -34,6 +34,7 @@ dist = 0.5
 nodesInit = np.genfromtxt('nodesInit.csv', delimiter=",")
 numNodes = nodesInit.shape[0]
 
+# First run `generation.py` script to obtain the base datset for sampling
 sampleFolder = '20000'
 adj_list =  sparse.load_npz('../../dataSet/'+sampleFolder+'/adj.npz').toarray()
 numIter = int(adj_list.shape[0]/numNodes)
