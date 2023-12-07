@@ -183,7 +183,7 @@ class vaeModel(nn.Module):
 
 class cModel(nn.Module):
     def __init__(self):
-        super(c_MLP, self).__init__()
+        super(cModel, self).__init__()
         self.dropout_p = 0.
 
         self.model = torch.nn.Sequential()

@@ -88,6 +88,7 @@ def weighted_mse_loss(input, target, weight):
     return (weight * (input - target) ** 2).sum()
 
 def stiffness_weighted_loss(c_pred, c):
+    paramDim = c.shape[-1]
     c_mse = 0.
     weight = 1.
     for i in range(paramDim):

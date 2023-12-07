@@ -41,7 +41,7 @@ z_dim = latent_dim
 c_hidden_dim = [latent_dim, 400, 800, 1000, 400, 400, 200]
 inv_hidden_dim = [500, 500, 600, 500, 300, 200]
 
-epochs = 200
+epochs = 1
 dropout = 0.
 
 kl_update = 'annealing'
@@ -75,7 +75,7 @@ elif recon_loss_func == 'bce':
 
 folder = '../data'
 
-print(folder)
+print("Read data from ", folder)
 
 perturbation = sparse.load_npz(folder+'/node-offset.npz').toarray()
 nodes = sparse.load_npz(folder+'/node-position.npz').toarray()
@@ -85,9 +85,8 @@ adj_data = sparse.load_npz(folder+'/adjacency-matrix.npz').toarray()
 numNodes = adj_data.shape[-1]
 numIter = int(adj_data.shape[0]/numNodes)
 
-print(numIter)
-print('num of nodes = ', numNodes)
-print("Total num of uc = ", numIter)
+print('Number of nodes = ', numNodes)
+print("Number of unit cells = ", numIter)
 
 ptb_mask = np.ones([numNodes*dim])
 ptb_vec = []
@@ -110,8 +109,6 @@ adj_vec_dim = len(a_row)
 x_row, x_col = np.nonzero(ptb_mask)
 ptb_vec_dim = len(x_row)
 
-print("adj_vec_dim = ", adj_vec_dim)
-print("ptb_vec_dim = ", ptb_vec_dim)
 c_data = stiffness.clone()
 
 check_file = os.path.exists(folder+'/train_ptb_norm.npz')
@@ -128,9 +125,6 @@ else:
         xrow, xcol = np.nonzero(x_iterk)
         a.append(x_iterk[x_row,x_col])
         total_num_ptb_node.extend([len(np.unique(np.concatenate((xrow, xcol))))])
-
-    print("Num of ptb node = ", np.unique(np.array(total_num_ptb_node)))
-    print("Num of uc <= "+str(max_num_ptb)+" = ", len(np.where(np.array(total_num_ptb_node)<=max_num_ptb)[0]))
 
     ptb_data = np.array(a)
     ptb_norm = ptb_data.copy()
@@ -157,7 +151,7 @@ check_file = os.path.exists(folder+'/moduli.csv')
 if check_file == True:
     pass
 else:
-    c_test = stiffness.copy()
+    c_test = c_data.numpy()
     s_name = ['E1', 'E2', 'E3', 'G23', 'G31', 'G12', 'v21', 'v31', 'v32', 'v12', 'v13', 'v23']
     moduli = np.zeros([c_test.shape[0],len(s_name)])
     singular_id = []
