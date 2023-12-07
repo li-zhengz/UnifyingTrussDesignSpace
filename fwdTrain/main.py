@@ -81,7 +81,7 @@ def test(model, c_model, test_loader, saveResults, test_batch_size):
         adj_pred = adj_decoded.cpu().detach().numpy()
         
         c_pred = c_pred.cpu().detach().numpy()
-        c_test = c_test.cpu().detach().numpy()
+        c_test = c.cpu().detach().numpy()
 
         z_pred = encoded.cpu().detach().numpy()
         mu_pred = mu.cpu().detach().numpy()
@@ -236,15 +236,15 @@ if best_accuracy_file is None:
             print("Epoch:", '%03d' % (epoch + 1),'/', str(epochs)\
             ,", adj train mse =", "{:.4f}".format(adj_loss_mse / len(train_loader)/batch_size)\
             ,", adj test mse =", "{:.4f}".format(adj_test_mse/len(test_loader)/test_batch_size)\
-            ,", x train =", "{:.5f}".format(x_loss_mse/ len(train_loader)/batch_size )\
-            ,", x test =", "{:.5f}".format(x_test_mse/len(test_loader)/test_batch_size)\
-            ,", c train =", "{:.6f}".format(c_loss_mse/ len(train_loader)/batch_size )\
-            ,", c test =", "{:.6f}".format(c_test_mse/len(test_loader)/test_batch_size)\
-            ,", KL weight =", "{:.5f}".format(KLweight)\
+            ,", x train =", "{:.4f}".format(x_loss_mse/ len(train_loader)/batch_size )\
+            ,", x test =", "{:.4f}".format(x_test_mse/len(test_loader)/test_batch_size)\
+            ,", c train =", "{:.4f}".format(c_loss_mse/ len(train_loader)/batch_size )\
+            ,", c test =", "{:.4f}".format(c_test_mse/len(test_loader)/test_batch_size)\
+            ,", KL weight =", "{:.4f}".format(KLweight)\
             ,", time =", "{:.2f}".format(end1-start1))
 
             if best_c_accuracy == 0. or (c_test_mse/len(test_loader)/test_batch_size < best_c_accuracy):
-                print('updating best c accuracy: previous best = {:.6f} new best = {:.6f}'.format(best_c_accuracy,
+                print('updating best c accuracy: previous best = {:.4f} new best = {:.4f}'.format(best_c_accuracy,
                                                                                          c_test_mse/len(test_loader)/test_batch_size))
                 best_c_accuracy = c_test_mse/len(test_loader)/test_batch_size
                 torch.save(c_model.state_dict(), outputFolder+'/best_c_model.pt')

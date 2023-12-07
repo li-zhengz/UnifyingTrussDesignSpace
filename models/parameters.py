@@ -41,7 +41,7 @@ z_dim = latent_dim
 c_hidden_dim = [latent_dim, 400, 800, 1000, 400, 400, 200]
 inv_hidden_dim = [500, 500, 600, 500, 300, 200]
 
-epochs = 1
+epochs = 200
 dropout = 0.
 
 kl_update = 'annealing'

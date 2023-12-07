@@ -89,6 +89,10 @@ for adj, x, c in test_loader:
     mu_pred = mu.cpu().detach().numpy()
     std_pred = std.cpu().detach().numpy()
 
+    if ~os.path.exists(outputFolder+'/validation'):
+
+        os.system("mkdir "+outputFolder+'/validation')
+
     np.savetxt( outputFolder+'/validation/x_test.csv', x_test, delimiter=",")
     np.savetxt( outputFolder+'/validation/x_pred.csv', x_pred, delimiter=",")
     sparse.save_npz(outputFolder +'/validation/adj_test.npz', sparse.csr_matrix(adj_test))
