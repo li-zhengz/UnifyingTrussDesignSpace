@@ -157,7 +157,7 @@ check_file = os.path.exists(folder+'/moduli.csv')
 if check_file == True:
     pass
 else:
-    c_test = stiffness_vec.copy()
+    c_test = stiffness.copy()
     s_name = ['E1', 'E2', 'E3', 'G23', 'G31', 'G12', 'v21', 'v31', 'v32', 'v12', 'v13', 'v23']
     moduli = np.zeros([c_test.shape[0],len(s_name)])
     singular_id = []
