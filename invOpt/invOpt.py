@@ -119,7 +119,7 @@ except OSError:
 else:
     print ('Successfully created the directory ' + inverseSaveFolder)
 
-
+stiffness_vec = c_data.numpy()
 moduli = pd.read_csv(folder+'/moduli.csv', delimiter = ",", header = None).to_numpy()
 loss = 0.
 
@@ -298,14 +298,16 @@ for count, k in enumerate(opt_target):
     target_value = opt_value[count]
     print("Prediction: ", target_pred[best_inv_pred].detach().numpy())
     print("Target: ", target_value)
-    print("Predicted s: \n")
-    print(s_name)
-    print(np.round(s_vec[best_inv_pred,:].detach().numpy(),4))
+    # print("Predicted s: \n")
+    # print(s_name)
+    # print(np.round(s_vec[best_inv_pred,:].detach().numpy(),4))
 
 best_pred_z = updated_z[best_inv_pred,:]
 print("Predicted best id: ", best_inv_pred)
 adj_decoded, x_decoded = model.decoder(torch.tensor(updated_z).float())
 
+if ~os.path.exists(inverseSaveFolder):
+    os.system("mkdir " + inverseSaveFolder)
 np.savetxt(inverseSaveFolder+'/ml_prediction.txt', vec2tensor(predicted_c[best_inv_pred,:]).flatten())
 np.savetxt(inverseSaveFolder+'/updated_z.csv', updated_z, delimiter = ",")
 
