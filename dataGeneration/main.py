@@ -38,7 +38,7 @@ numNodes = nodesInit.shape[0]
 sampleFolder = '20000'
 adj_list =  sparse.load_npz('../../dataSet/'+sampleFolder+'/adj.npz').toarray()
 numIter = int(adj_list.shape[0]/numNodes)
-print(adj_list.shape[0])
+
 L = np.arange(numIter)
 all_combinations = [comb for comb in combinations_with_replacement(L, 2)]
 

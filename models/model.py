@@ -117,7 +117,6 @@ class vaeModel(nn.Module):
 
     def encoder(self, adj, x):
         
-        ## encode ##
         adj = self.activation(self.en_adj_fc1(adj))
         adj = self.activation(self.en_adj_fc2(adj))
         adj = self.activation(self.en_adj_fc3(adj))
