@@ -1,5 +1,5 @@
 # UnifyingTrussDesignSpace
-This repository contains the generative modeling framework and code for constructing a unified design space for the use of inverse design with truss lattices as described in 'Unifying the design space of truss metamaterials by generative modeling'. 
+This repository contains the generative modeling framework and code for constructing a unified design space for the use of inverse design with truss lattices as described in [Unifying the design space and optimizing linear and nonlinear truss metamaterials by generative modeling](https://www.nature.com/articles/s41467-023-42068-x). 
 
 The corresponding dataset used in this work can be found under [ETH Zurich research colletion](https://doi.org/10.3929/ethz-b-000618078).
 
@@ -55,3 +55,20 @@ You can use the code to optimize for other properties by defining the target pro
 opt_target = ['E33'] 
 ```
 The number of initial guesses `num_sample` and the number of cores used in multiprocessing `num_workers` can be modified to fit specific requirements.
+
+
+## Citation
+
+If this code is useful for your research, please cite our [publication](https://www.nature.com/articles/s41467-023-42068-x).
+```bibtex
+@article{zheng2023unifying,
+  title={Unifying the design space and optimizing linear and nonlinear truss metamaterials by generative modeling},
+  author={Zheng, Li and Karapiperis, Konstantinos and Kumar, Siddhant and Kochmann, Dennis M},
+  journal={Nature Communications},
+  volume={14},
+  number={1},
+  pages={7563},
+  year={2023},
+  publisher={Nature Publishing Group UK London}
+}
+}
