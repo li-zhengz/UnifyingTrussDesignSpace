@@ -21,13 +21,10 @@ sys.path.append(parent)
 from models.parameters import *
 from models.model import *
 from models.utils import *
-from prefetch_generator import BackgroundGenerator
 import torch.autograd.profiler as profiler
 from tqdm import trange
 from torch.optim.lr_scheduler import StepLR
-import math
 
-import os
 
 torch.cuda.empty_cache()
 torch.manual_seed(0)
@@ -37,9 +34,9 @@ def test(model, c_model, test_loader, saveResults, test_batch_size):
     model.eval()
     c_model.eval()
 
-    adj_test_mse = 0.; 
-    x_test_mse = 0.; 
-    c_test_mse = 0.;
+    adj_test_mse = 0.
+    x_test_mse = 0.
+    c_test_mse = 0.
     test_kld_loss = 0.
 
     x_test = []; adj_test = []

@@ -43,6 +43,8 @@ inv_hidden_dim = [500, 500, 600, 500, 300, 200]
 
 epochs = 200
 dropout = 0.
+batch_size = 512
+test_batch_size = batch_size
 
 kl_update = 'annealing'
 
@@ -74,9 +76,6 @@ elif recon_loss_func == 'bce':
     recon_criterion = nn.BCELoss(reduction = 'sum')
 
 folder = '../data'
-
-print("Read data from ", folder)
-
 perturbation = sparse.load_npz(folder+'/node-offset.npz').toarray()
 nodes = sparse.load_npz(folder+'/node-position.npz').toarray()
 stiffness = torch.tensor((pd.read_csv(folder+'/stiffness-vec.csv', delimiter = ",", header = None)).values).float()
@@ -85,8 +84,8 @@ adj_data = sparse.load_npz(folder+'/adjacency-matrix.npz').toarray()
 numNodes = adj_data.shape[-1]
 numIter = int(adj_data.shape[0]/numNodes)
 
-print('Number of nodes = ', numNodes)
-print("Number of unit cells = ", numIter)
+print('Loading data from ', folder)
+print("Number of truss unit cells = ", numIter)
 
 ptb_mask = np.ones([numNodes*dim])
 ptb_vec = []
@@ -98,18 +97,11 @@ ptb_mask[zero_id] = 0.
 ptb_mask = ptb_mask.reshape([numNodes,dim])
 np.savetxt(folder+'/ptb_mask.csv', ptb_mask, delimiter = ",")
 
-batch_size = 512
-test_batch_size = batch_size
-
-max_num_ptb = 8
-
 a_row, a_col = np.triu_indices(numNodes)
 adj_vec_dim = len(a_row)
 
 x_row, x_col = np.nonzero(ptb_mask)
 ptb_vec_dim = len(x_row)
-
-c_data = stiffness.clone()
 
 check_file = os.path.exists(folder+'/train_ptb_norm.npz')
 if check_file == True:
@@ -117,7 +109,6 @@ if check_file == True:
     x = sparse.load_npz(folder+'/train_ptb.npz').toarray()
     ptb_norm = sparse.load_npz(folder+'/train_ptb_norm.npz').toarray()
 else:
-
     a = []
     total_num_ptb_node = []
     for i in range(numIter):
@@ -146,17 +137,18 @@ adj_list = torch.from_numpy(adj_list).float()
 x = torch.from_numpy(x).float()
 ptb_mask = torch.from_numpy(ptb_mask).float()
 
+# Calculate moduli
 check_file = os.path.exists(folder+'/moduli.csv')
 
 if check_file == True:
     pass
 else:
-    c_test = c_data.numpy()
+    c_data = stiffness.numpy()
     s_name = ['E1', 'E2', 'E3', 'G23', 'G31', 'G12', 'v21', 'v31', 'v32', 'v12', 'v13', 'v23']
-    moduli = np.zeros([c_test.shape[0],len(s_name)])
+    moduli = np.zeros([c_data.shape[0],len(s_name)])
     singular_id = []
-    for i in range(c_test.shape[0]):
-        c_vec = c_test[i,:]
+    for i in range(c_data.shape[0]):
+        c_vec = c_data[i,:]
         c_tensor = vec2tensor(c_vec)
         if np.linalg.det(c_tensor) == 0.:
             singular_id.append(i)

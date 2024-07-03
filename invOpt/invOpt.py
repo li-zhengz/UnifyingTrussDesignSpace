@@ -55,6 +55,7 @@ a_row, a_col = np.triu_indices(numNodes)
 x_row, x_col = np.nonzero(ptb_mask)
 
 relu_func = nn.ReLU()
+
 # *********************************
 # ******** Initialization *********
 # *********************************
