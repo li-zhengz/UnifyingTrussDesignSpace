@@ -8,25 +8,47 @@ import os
 import torch.nn as nn
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
-def vec2tensor(ex):
-    exC = np.zeros([6,6])
-    exC[0,0] = ex[0]; exC[0,1] = ex[1]; exC[0,2] = ex[2]
-    exC[1,0] = ex[1]; exC[1,1] = ex[3]; exC[1,2] = ex[4]; 
-    exC[2,0] = ex[2]; exC[2,1] = ex[4]; exC[2,2] = ex[5]
-    exC[3,3] = ex[6]; exC[4,4] = ex[7]; exC[5,5] = ex[8]
-    return exC
+def vec2tensor(C_vec):
+    """
+    Converts a vector representation of a stiffness matrix to a 6x6 tensor.
 
-def s2vec(s_matrix):
-    s_vec = np.ones([12])
-    s_vec[0] = 1./s_matrix[0,0]; s_vec[1] = 1./s_matrix[1,1]; s_vec[2] = 1./s_matrix[2,2]
-    s_vec[3] = 1./s_matrix[3,3]; s_vec[4] = 1./s_matrix[4,4]; s_vec[5] = 1./s_matrix[5,5]
-    s_vec[6] = -s_matrix[0,1]*s_vec[1]
-    s_vec[7] = -s_matrix[0,2]*s_vec[2]
-    s_vec[8] = -s_matrix[1,2]*s_vec[2]
-    s_vec[9] = -s_matrix[1,0]*s_vec[0]
-    s_vec[10] = -s_matrix[2,0]*s_vec[0]
-    s_vec[11] = -s_matrix[2,1]*s_vec[1]
-    return s_vec
+    Parameters:
+    C_vec (array-like): A 1D array of length 9 representing the stiffness matrix.
+
+    Returns:
+    np.ndarray: A 6x6 stiffness matrix.
+    """
+    C_tensor = np.zeros((6, 6))
+    C_tensor[0, 0], C_tensor[0, 1], C_tensor[0, 2] = C_vec[0], C_vec[1], C_vec[2]
+    C_tensor[1, 0], C_tensor[1, 1], C_tensor[1, 2] = C_vec[1], C_vec[3], C_vec[4]
+    C_tensor[2, 0], C_tensor[2, 1], C_tensor[2, 2] = C_vec[2], C_vec[4], C_vec[5]
+    C_tensor[3, 3], C_tensor[4, 4], C_tensor[5, 5] = C_vec[6], C_vec[7], C_vec[8]
+    return C_tensor
+
+def s2vec(S_matrix):
+    """
+    Converts a compliance matrix to a vector representation.
+
+    Parameters:
+    S_matrix (np.ndarray): A 6x6 compliance matrix.
+
+    Returns:
+    np.ndarray: A 1D array of length 12 representing the compliance matrix.
+    """
+    S_vec = np.zeros(12)
+    S_vec[0] = 1. / S_matrix[0, 0]
+    S_vec[1] = 1. / S_matrix[1, 1]
+    S_vec[2] = 1. / S_matrix[2, 2]
+    S_vec[3] = 1. / S_matrix[3, 3]
+    S_vec[4] = 1. / S_matrix[4, 4]
+    S_vec[5] = 1. / S_matrix[5, 5]
+    S_vec[6] = -S_matrix[0, 1] * S_vec[1]
+    S_vec[7] = -S_matrix[0, 2] * S_vec[2]
+    S_vec[8] = -S_matrix[1, 2] * S_vec[2]
+    S_vec[9] = -S_matrix[1, 0] * S_vec[0]
+    S_vec[10] = -S_matrix[2, 0] * S_vec[0]
+    S_vec[11] = -S_matrix[2, 1] * S_vec[1]
+    return S_vec
 
 numNodes = 27
 dim = 3

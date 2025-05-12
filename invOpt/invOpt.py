@@ -37,18 +37,26 @@ torch.autograd.set_detect_anomaly(True)
 torch.manual_seed(0)
 torch.backends.cudnn.benchmark = True
 
-device = 'cpu'
+# Set the device to GPU if available, otherwise use CPU
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+# Initialize the VAE model and the property predictor
 model = vaeModel()
 c_model = cModel()
 
+# Load the pre-trained weights for the VAE model and property predictor
+# The weights are loaded from the specified output folder
 model.load_state_dict(torch.load(outputFolder+'/best_model.pt', map_location=torch.device('cpu')))
 c_model.load_state_dict(torch.load(outputFolder+'/best_c_model.pt', map_location=torch.device('cpu')))
 
+# Set both models to evaluation mode 
 model.eval()
 c_model.eval()
 
+# Move the models to the specified device 
 model.to(device)
 c_model.to(device)
+
 ptb_mask = pd.read_csv(folder+'/ptb_mask.csv', delimiter = ",", header = None).to_numpy()
 
 a_row, a_col = np.triu_indices(numNodes)
@@ -63,6 +71,10 @@ relu_func = nn.ReLU()
 opt_target = ['E33']
 opt_value = [300.]
 
+opt_epoch = 1200   # Number of optimization epochs
+num_sample = 100   # Number of initial samples to consider for optimization
+num_workers = 40   # Number of worker processes to use for multiprocessing
+
 inverseSaveFolder = outputFolder+'/opt/'
 for index, target in enumerate(opt_target):
     if index == len(opt_target)-1:
@@ -75,12 +87,9 @@ num_train = len(dataset)
 data_loader = DataLoaderX(dataset, batch_size = num_train, shuffle = False, pin_memory = True)
 
 optimization_method = ['Adam']
-opt_epoch = 1200
-num_sample = 100
 Adam_lr = 1e-4
 trace_back = True
 recon_criterion = nn.MSELoss(reduction = 'sum')
-num_workers = 40
 
 start = time.time()
 var_dict = {}
@@ -109,16 +118,16 @@ else:
 dtype = torch.float
 train_z = np.array(train_z)
 
-print("**************************************")
-print("***** Inverse design target ",opt_target[0]," *****")
-print("**************************************") 
+width = 50
+message = f"Inverse design target {opt_target[0]}"
+border = "*" * width
 
-try:
-    os.system('mkdir '+inverseSaveFolder+'/')
-except OSError:
-    print ("Creation of the directory failed")
-else:
-    print ('Successfully created the directory ' + inverseSaveFolder)
+print(border)
+print(f"*{message.center(width - 2)}*")
+print(border)
+
+os.makedirs(inverseSaveFolder, exist_ok=True)
+print ('Successfully created the directory ' + inverseSaveFolder)
 
 stiffness_vec = c_data.numpy()
 moduli = pd.read_csv(folder+'/moduli.csv', delimiter = ",", header = None).to_numpy()
@@ -154,7 +163,6 @@ optimization = optimization_method[0]
 start = time.time()
 
 initial_z.share_memory_()
-
 patience = 200
 
 def init_workder(x, x_shape, y, y_shape, z, z_shape, m, m_shape, n, n_shape):
