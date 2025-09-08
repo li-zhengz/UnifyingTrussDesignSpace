@@ -47,6 +47,7 @@ The variational autoencoder (VAE) reconstructs the truss structure by
 ```python
 adj_decoded, x_decoded = model.decoder(encoded)
 ```
+Note that `x` represents node offsets rather than absolute spatial coordinates. To obtain the actual coordinates, pass `x` to the function `ptb2nodes` in `models/utils.py`.
 ### Inverse design
 The continuous latent representation of truss lattices allows for the use of gradient-based optimization to search for structures with desired properties. An example optimizing for maximum effective Young's moduli $E_{33}$ can be found in `invOpt.py`.
 You can use the code to optimize for other properties by defining the target property in `opt_target`, e.g., 
@@ -55,7 +56,6 @@ You can use the code to optimize for other properties by defining the target pro
 opt_target = ['E33'] 
 ```
 The number of initial guesses `num_sample` and the number of cores used in multiprocessing `num_workers` can be modified to fit specific requirements.
-
 
 ## Citation
 
